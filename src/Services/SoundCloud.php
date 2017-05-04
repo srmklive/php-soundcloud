@@ -60,6 +60,13 @@ class SoundCloud
     protected $httpRequestUrl;
 
     /**
+     * SoundCloud Access Token.
+     *
+     * @var string
+     */
+    protected $accessToken;
+
+    /**
      * SoundCloud constructor.
      *
      * @param string $clientId
@@ -115,11 +122,59 @@ class SoundCloud
 
         $this->buildHttpRequestUrl('oauth2/token');
 
-        return $this->doHttpRequest('post');
+        try {
+            $response = $this->doHttpRequest('post');
+
+            $this->setAccessToken($response['access_token']);
+
+            return $response;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     /**
+     * Get access token from SoundCloud API.
      *
+     * @param string $code
+     * @param string $grant_type
+     *
+     * @return array|string
+     */
+    public function getAccessToken($code, $grant_type = 'authorization_code')
+    {
+        $this->buildHttpRequest([
+            'grant_type'    =>  $grant_type,
+            'code'          =>  $code
+        ]);
+
+        $this->buildHttpRequestUrl('oauth2/token');
+
+        try {
+            $response = $this->doHttpRequest('post');
+
+            $this->setAccessToken($response['access_token']);
+
+            return $response;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+
+    /**
+     * Set SoundCloud API Access Token.
+     *
+     * @param string $token
+     */
+    protected function setAccessToken($token)
+    {
+        $this->accessToken = $token;
+
+        $this->httpHeaders['Authorization'] = 'OAuth '.$token;
+    }
+
+    /**
+     * Perform HTTP API Request for SoundCloud.
      *
      * @param string $type
      *
@@ -165,11 +220,13 @@ class SoundCloud
      */
     protected function buildHttpRequest($request, $skip = [])
     {
-        $this->httpRequest = new Collection([
+        $httpRequest = new Collection([
             'client_id'         =>  $this->clientId,
             'client_secret'     =>  $this->clientSecret,
             'redirect_uri'      =>  $this->redirectUrl,
-        ])->merge($request)->except($skip);
+        ]);
+
+        $this->httpRequest = $httpRequest->merge($request)->except($skip);
     }
 
     /**
