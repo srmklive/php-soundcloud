@@ -1,0 +1,28 @@
+{
+    "name": "srmklive/php-soundcloud",
+    "type": "library",
+    "description": "PHP wrapper for SoundCloud API.",
+    "keywords": ["http", "rest", "web service", "soundcloud", "php soundcloud"],
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Raza Mehdi",
+        "email": "srmk@outlook.com"
+      }
+    ],
+    "autoload":{
+      "psr-4": {
+        "Srmklive\\SoundCloud\\": "src/"
+      }
+    },	
+    "require": {
+        "guzzlehttp/guzzle": "~5.0|~6.0",
+        "illuminate/support": "~5.1|~5.2|~5.3|~5.4",
+        "symfony/var-dumper": "~2.7|~2.8|~3.0|~3.1|~3.2"
+    },
+    "config": {
+      "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true    
+}
