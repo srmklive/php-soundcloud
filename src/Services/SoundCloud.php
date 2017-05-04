@@ -79,7 +79,7 @@ class SoundCloud
         $this->clientSecret = $clientSecret;
         $this->redirectUrl = $redirectUrl;
 
-        $this->httpClient = new HttpClient;
+        $this->httpClient = new HttpClient();
         $this->httpHeaders['Accept'] = 'application/json';
     }
 
@@ -115,9 +115,9 @@ class SoundCloud
     public function loginUsingCredentials($username, $password)
     {
         $this->buildHttpRequest([
-            'username'      =>  $username,
-            'password'      =>  $password,
-            'grant_type'    =>  'password',
+            'username'      => $username,
+            'password'      => $password,
+            'grant_type'    => 'password',
         ], ['redirect_uri']);
 
         $this->buildHttpRequestUrl('oauth2/token');
@@ -144,8 +144,8 @@ class SoundCloud
     public function getAccessToken($code, $grant_type = 'authorization_code')
     {
         $this->buildHttpRequest([
-            'grant_type'    =>  $grant_type,
-            'code'          =>  $code
+            'grant_type'    => $grant_type,
+            'code'          => $code,
         ]);
 
         $this->buildHttpRequestUrl('oauth2/token');
@@ -178,16 +178,16 @@ class SoundCloud
      *
      * @param string $type
      *
-     * @return mixed
-     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     protected function doHttpRequest($type)
     {
         $bodyParam = ($type == 'get') ? 'query' : 'form_params';
 
         $options = [
-            $bodyParam => $this->httpRequest->toArray()
+            $bodyParam => $this->httpRequest->toArray(),
         ];
 
         if (!empty($this->headers)) {
@@ -221,9 +221,9 @@ class SoundCloud
     protected function buildHttpRequest($request, $skip = [])
     {
         $httpRequest = new Collection([
-            'client_id'         =>  $this->clientId,
-            'client_secret'     =>  $this->clientSecret,
-            'redirect_uri'      =>  $this->redirectUrl,
+            'client_id'         => $this->clientId,
+            'client_secret'     => $this->clientSecret,
+            'redirect_uri'      => $this->redirectUrl,
         ]);
 
         $this->httpRequest = $httpRequest->merge($request)->except($skip);
@@ -241,7 +241,7 @@ class SoundCloud
         $url .= 'soundcloud.com/'.$path;
 
         if (preg_match('/connect/', $path)) {
-            $url .= !($this->httpRequest->isEmpty()) ? '?' . http_build_query(
+            $url .= !($this->httpRequest->isEmpty()) ? '?'.http_build_query(
                     $this->httpRequest->toArray()
                 ) : '';
         }
